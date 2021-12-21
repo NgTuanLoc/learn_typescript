@@ -1,9 +1,10 @@
 import { User } from './models/User';
 
-const user = new User({ name: 'NgTuanLoc', age: 21 });
-console.log(user.get('name'));
-console.log(user.get('age'));
+const user = new User({ id: 1 });
 
-user.set({ name: 'susu' });
-console.log(user.get('name'));
-console.log(user.get('age'));
+user.set({ name: 'Cute SuSu', age: 100 });
+
+user.save();
+
+const newUser = new User({ name: 'Super pup', age: 12 });
+newUser.save();

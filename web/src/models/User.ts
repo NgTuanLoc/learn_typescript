@@ -1,10 +1,16 @@
+import axios, { AxiosResponse } from 'axios';
+import { setServers } from 'dns';
+
+const serverUrl = 'http://localhost:3000/users';
 interface UserProps {
+   id?: number;
    name?: string;
    age?: number;
 }
 
-type Callback = () => {};
+type Callback = () => void;
 export class User {
+   events: { [key: string]: Callback[] } = {};
    constructor(private data: UserProps) {}
 
    get(propName: string): number | string {
@@ -16,6 +22,36 @@ export class User {
    }
 
    on(eventName: string, callback: Callback) {
-       
+      const handlers = this.events[eventName] || [];
+      handlers.push(callback);
+      this.events[eventName] = handlers;
+   }
+
+   trigger(eventName: string): void {
+      const handlers = this.events[eventName];
+      if (!handlers || handlers.length === 0) {
+         return;
+      }
+      handlers.forEach((callback) => {
+         callback();
+      });
+   }
+
+   fetch(): void {
+      axios
+         .get(`${serverUrl}/${this.get('id')}`)
+         .then((response: AxiosResponse): void => {
+            this.set(response.data);
+         });
+   }
+
+   save(): void {
+      const id = this.get('id');
+      if (id) {
+         // PUT
+         axios.put(`${serverUrl}/${id}`, this.data);
+      } else {
+         axios.post(serverUrl, this.data);
+      }
    }
 }
