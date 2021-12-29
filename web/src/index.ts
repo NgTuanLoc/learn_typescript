@@ -1,10 +1,12 @@
-import { User } from './models/User';
+import { Collection } from './models/Collection';
+import { User, UserProps } from './models/User';
 
-const user = new User({ name: 'NgTuanLoc', age: 21, id: 1 });
+const serverUrl = 'http://localhost:3000/users';
 
-user.on('save', () => {
-   console.log('Save event');
-   console.log(user);
+const collection = User.buildCollection();
+
+collection.on('change', () => {
+   console.log(collection);
 });
 
-user.save();
+collection.fetch();
