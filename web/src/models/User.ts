@@ -23,6 +23,11 @@ export class User extends Model<UserProps> {
    static buildCollection(): Collection<User, UserProps> {
       return new Collection<User, UserProps>(serverUrl, (json: UserProps) =>
          User.buildUser(json)
-       );
+      );
+   }
+
+   setRandomAge(): void {
+      const randomAge = Math.round(Math.random() * 100 + 1);
+      this.set({ age: randomAge });
    }
 }
